@@ -95,7 +95,10 @@
                                 <strong class="text-dark mr-3">Colors:</strong>
                                 <c:forEach items="${requestScope.lstProductColor}" var="s" varStatus="i">
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input name="orderDetailColorValue" type="radio" value="${s.color.colorValue}" class="custom-control-input" <c:if test="${i.count eq 1}">checked=""</c:if> id="s${i.count}">
+                                        <input name="orderDetailColorValue" type="radio" value="${s.color.colorValue}" 
+                                               class="custom-control-input"
+                                               <c:if test="${selectedColorId != null ? selectedColorId == s.color.colorId : i.count == 1}">checked</c:if>
+                                               id="s${i.count}">
                                         <label class="custom-control-label" for="s${i.count}">${s.color.colorValue}</label>
                                     </div>
                                 </c:forEach>

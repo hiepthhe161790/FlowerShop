@@ -65,28 +65,39 @@ public class ProductDetailController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        CategoryDAO categoryDAO = new CategoryDAO();
-        ProductDAO productDAO = new ProductDAO();
-        ProductImgDetailDAO productImgDetailDAO = new ProductImgDetailDAO();
-        ProductColorDAO productColorDAO = new ProductColorDAO();
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    CategoryDAO categoryDAO = new CategoryDAO();
+    ProductDAO productDAO = new ProductDAO();
+    ProductImgDetailDAO productImgDetailDAO = new ProductImgDetailDAO();
+    ProductColorDAO productColorDAO = new ProductColorDAO();
 
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        List<Category> lstCategory = categoryDAO.getAll();
-        Product product = productDAO.getOne(productId);
-        List<ProductImgDetail> lstProductImgDetail = productImgDetailDAO.getAll(productId);
-        List<ProductColor> lstProductColor = productColorDAO.getAll(productId, true);
-        List<Product>lstRandProduct = productDAO.getRandByCategoryId(5, product.getCategoryId(), productId);
+    int productId = Integer.parseInt(request.getParameter("productId"));
+    String colorIdParam = request.getParameter("colorId"); // Get colorId from URL, if available
+    Integer colorId = null;
 
-        request.setAttribute("lstCategory", lstCategory);
-        request.setAttribute("lstRandProduct", lstRandProduct);
-        request.setAttribute("product", product);
-        request.setAttribute("lstProductImgDetail", lstProductImgDetail);
-        request.setAttribute("lstProductColor", lstProductColor);
-        request.getRequestDispatcher("product-detail.jsp").forward(request, response);
+    if (colorIdParam != null && !colorIdParam.isEmpty()) {
+        colorId = Integer.parseInt(colorIdParam);
     }
+
+    List<Category> lstCategory = categoryDAO.getAll();
+    Product product = productDAO.getOne(productId);
+    List<ProductImgDetail> lstProductImgDetail = productImgDetailDAO.getAll(productId);
+    List<ProductColor> lstProductColor = productColorDAO.getAll(productId, true);
+    List<Product> lstRandProduct = productDAO.getRandByCategoryId(5, product.getCategoryId(), productId);
+
+    // Set attributes for JSP
+    request.setAttribute("lstCategory", lstCategory);
+    request.setAttribute("lstRandProduct", lstRandProduct);
+    request.setAttribute("product", product);
+    request.setAttribute("lstProductImgDetail", lstProductImgDetail);
+    request.setAttribute("lstProductColor", lstProductColor);
+    request.setAttribute("selectedColorId", colorId); // Pass colorId for highlighting in JSP
+
+    request.getRequestDispatcher("product-detail.jsp").forward(request, response);
+}
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
